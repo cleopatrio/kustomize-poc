@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app quem
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *app
+  template:
+    spec:
+      containers:
+      - image: jmalloc/echo-server
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+             name: *app
+        resources:
+          limits:
+            cpu: "32m"
+            memory: "64Mi"
+        ports:
+          - name: &portName http
+            containerPort: 5550
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: *portName
+            httpHeaders:
+              - name: X-Kubernetes-Probe
+                value: "ready"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: *portName
+            httpHeaders:
+              - name: X-Kubernetes-Probe
+                value: "live"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+          timeoutSeconds: 10
+        securityContext:
+          allowPrivilegeEscalation: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000

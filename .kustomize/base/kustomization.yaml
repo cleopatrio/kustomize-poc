@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: &app quem
+
+commonLabels:
+  app: *app
+  app.kubernetes.io/name: *app
+  app.kubernetes.io/part-of: *app
+  app.kubernetes.io/instance: *app
+  app.vcs/commit: "GIT_COMMIT"
+  env: "ENVIRONMENT"
+  version: "IMAGE_VERSION"
+
+commonAnnotations:
+  kubernetes.io/change-cause: "COMMIT_MESSAGE"
+  ad.datadoghq.com/tags: '{"env": "ENVIRONMENT", "team": "developers"}'
+
+resources:
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
