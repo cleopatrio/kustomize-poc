@@ -21,7 +21,7 @@ spec:
             memory: "64Mi"
         ports:
           - name: &portName http
-            containerPort: 5550
+            containerPort: 8080
             protocol: TCP
         readinessProbe:
           httpGet:
