@@ -2,3 +2,5 @@ resources:
   - ../../base
 namespace: production
 # nameSuffix: -prd
+patches:
+- replica_count.yaml
